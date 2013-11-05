@@ -48,12 +48,16 @@ sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
 sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
 
 echo "--- Binding MySQL To All Addresses ---"
-sudo sed -i "s/bind-address ?= 127.0.0.1/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
+sudo sed -i "s/bind-address\s*=.*/bind-address = 0.0.0.0/" /etc/mysql/my.cnf
 
+echo "--- Grant root Remote Access ---"
+mysql -u root -proot <<QUERY
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' IDENTIFIED BY 'root' WITH GRANT OPTION;
+FLUSH PRIVILEGES;
+QUERY
 
 echo "--- Restarting MySQL ---"
 sudo service mysql restart
-
 
 echo "--- Restarting Apache ---"
 sudo service apache2 restart
