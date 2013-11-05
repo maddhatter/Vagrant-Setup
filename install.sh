@@ -22,7 +22,7 @@ echo "--- Updating packages list ---"
 sudo apt-get update
 
 echo "--- Installing PHP-specific packages ---"
-sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server-5.5 php5-mysql git-core
+sudo apt-get install -y php5 apache2 libapache2-mod-php5 php5-curl php5-gd php5-mcrypt mysql-server-5.5 php5-mysql git-core php5-ldap
 
 echo "--- Installing and configuring Xdebug ---"
 sudo apt-get install -y php5-xdebug
@@ -46,6 +46,14 @@ sed -i "s/error_reporting = .*/error_reporting = E_ALL/" /etc/php5/apache2/php.i
 sed -i "s/display_errors = .*/display_errors = On/" /etc/php5/apache2/php.ini
 
 sed -i 's/AllowOverride None/AllowOverride All/' /etc/apache2/apache2.conf
+
+echo "--- Binding MySQL To All Addresses ---"
+sed -i "s/bind-address ?= 127.0.0.1/bind-address = 0.0.0.0"
+
+
+echo "--- Restarting MySQL ---"
+sudo service mysql restart
+
 
 echo "--- Restarting Apache ---"
 sudo service apache2 restart
